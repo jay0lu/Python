@@ -1,2 +1,117 @@
 >>> 'hello world'[::-1]
 'dlrow olleh'
+
+'''
+来源： csdn   作者：Spike_King   
+1. 简单的步长为-1, 即字符串的翻转(常用);
+
+2. 交换前后字母的位置;
+
+3. 递归的方式, 每次输出一个字符;
+
+4. 双端队列, 使用extendleft()函数;
+
+5. 使用for循环, 从左至右输出;
+'''
+# -*- coding: utf-8 -*-  
+       
+#eclipse pydev, python 3.3  
+#by C.L.Wang   
+#time: 2014. 4. 11  
+       
+string = 'abcdef'
+       
+def string_reverse1(string):  
+    return string[::-1]  
+       
+def string_reverse2(string):  
+    t = list(string)  
+    l = len(t)  
+    for i,j in zip(range(l-1, 0, -1), range(l//2)):  
+        t[i], t[j] = t[j], t[i]  
+    return "".join(t)  
+       
+def string_reverse3(string):  
+    if len(string) <= 1:  
+        return string  
+    return string_reverse3(string[1:]) + string[0]  
+       
+from collections import deque  
+def string_reverse4(string):  
+    d = deque()  
+    d.extendleft(string)  
+    return ''.join(d)  
+       
+def string_reverse5(string):  
+    #return ''.join(string[len(string) - i] for i in range(1, len(string)+1))  
+    return ''.join(string[i] for i in range(len(string)-1, -1, -1))  
+       
+print(string_reverse1(string))  
+print(string_reverse2(string))  
+print(string_reverse3(string))  
+print(string_reverse4(string))  
+print(string_reverse5(string))
+
+'''
+ Python中的切片功能强大。但是切片很容易让人搞混。
+
+个人觉得Python的文档不怎么好，好多东西都是零散的，更像教科书。
+
+下面的参考来自Python3.2文档和Python参考手册（第4版）：
+
+
+a = [1,2,3,4]
+x = a[1:2] #a.__getitem__(slice(1,2,None))
+slice([start], stop[, step])
+Return a slice object representing the set of indices specified by range(start, stop, step). The start and step arguments default to None. Slice objects have read-only data attributes start, stop and step which merely return the argument values (or their default). They have no other explicit functionality; however they are used by Numerical Python and other third party extensions. Slice objects are also generated when extended indexing syntax is used. For example: a[start:stop:step] or a[start:stop, i]. See itertools.islice() for an alternate version that returns an iterator.
+range([start], stop[, step])
+This is a versatile function to create iterables yielding arithmetic progressions. It is most often used in for loops. The arguments must be integers. If the step argument is omitted, it defaults to 1. If the start argument is omitted, it defaults to 0. The full form returns an iterable of integers [start, start + step, start + 2 * step, ...]. If step is positive, the last element is the largest start + i * step less than stop; if step is negative, the last element is the smallest start + i * step greater than stop. step must not be zero (or else ValueError is raised).
+ 
+
+
+可以看到，list的切片，内部是调用__getitem__，和slice函数。而slice函数又是和range()函数相关的。
+
+range([start], stop[, step])
+
+[start, start + step, start + 2 * step, ...]
+
+真正让人迷惑的是list[start:stop:step]中的start和stop的默认值。
+
+按《Python参考手册（第4版）》的说法：
+
+    如果不指定start和stop具体值
+
+    当step>0时，start和stop默认值是索引的开头
+
+    当step<0时，start和stop默认值是索引的结尾
+
+我仔细再想下，发现有点不妥，a[::-1]又怎样解释？
+
+我觉得step的符号表示一种方向的含义：
+
++：即从左向右看，所以start默认是0，stop默认是索引最大值
+
+- ：即从右向左看，所以start默认是索引最大值，stop默认是0
+
+如：
+
+
+a = [0,1,2,3,4,5,6,7,8,9]
+a[:5:-1]   #step < 0，所以start = 9
+a[0:5:-1]  #指定了start = 0
+a[1::-1]   #step < 0，所以stop = 0
+ 
+
+
+Python3代码：
+
+
+l = list(range(10))
+print(l[5:0:-1])
+print(l[5:4:-1])
+print(l[:3:-1])
+print(l[0:3:-1])
+print(l[9::-1])
+'''
+
+
